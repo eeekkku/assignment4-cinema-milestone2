@@ -1,6 +1,6 @@
 package model;
 
-public class movie {
+public class Movie {
     private int id;
     private String title;
     private int duration;

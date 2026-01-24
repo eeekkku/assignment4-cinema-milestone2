@@ -1,6 +1,6 @@
 package model;
 
-public class hall {
+public class Hall {
     private int id;
     private int capacity;
 }
