@@ -10,4 +10,5 @@ public class RegularTicket extends Ticket {
     public double calculatePrice() {
         return 2200;
     }
+
 }

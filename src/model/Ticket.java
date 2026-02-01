@@ -1,6 +1,6 @@
 package model;
 
-public abstract class Ticket implements PricedItem, Validatable {
+public abstract class Ticket implements PricedItem, Validatable<Ticket> {
     protected int id;
     protected int sessionId;
     protected int seatNumber;
@@ -17,12 +17,8 @@ public abstract class Ticket implements PricedItem, Validatable {
 
     @Override
     public void validate() {
-        if (seatNumber <= 0) {
-            throw new IllegalArgumentException("Seat number must be positive");
-        }
-        if (customerName == null) {
-            throw new IllegalArgumentException("Customer name is required");
-        }
+        Validatable.require(seatNumber>0, "seat number must be positive");
+        Validatable.require(customerName!=null, "customer name required");
     }
 
     public int getId() { return id; }

@@ -10,5 +10,4 @@ public class StudentTicket extends Ticket {
     public double calculatePrice() {
         return 1800;
     }
-
 }
