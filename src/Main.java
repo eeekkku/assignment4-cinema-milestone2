@@ -4,37 +4,43 @@ import model.Ticket;
 import repository.TicketRepository;
 import service.TicketService;
 import utils.DatabaseConnection;
-
+import controller.TicketController;
+import utils.SortingUtils;
+import utils.ReflectionUtils;
 import java.sql.Connection;
 import java.sql.SQLException;
-
-void main() {
-    try (Connection conn = DatabaseConnection.getConnection()) {
-        IO.println("Connected to DB successfully!");
-
-        TicketRepository repo = new TicketRepository();
-        TicketService service = new TicketService(repo);
+import java.util.List;
 
 
-        Ticket t1 = new RegularTicket(1, 5, "Yerkezhan");
-        Ticket t2 = new StudentTicket(1, 2, "Valeriya");
+public class Main {
+    public static void main(String[] args) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            IO.println("Connected to DB successfully!");
 
-        service.sellTicket(t1);
-        service.sellTicket(t2);
 
-        try {
-            Ticket t3 = new RegularTicket(1, 5, "Aiman");
-            service.sellTicket(t3);
-        } catch (IllegalArgumentException e) {
-            IO.println("Error: " + e.getMessage());
+            TicketController controller = new TicketController(new TicketService(new TicketRepository()));
+
+            Ticket t1 = new RegularTicket(1, 3, "Aiman");
+            Ticket t2 = new StudentTicket(1, 6, "Anvar");
+
+            controller.sell(t1);
+            controller.sell(t2);
+
+            List<Ticket> tickets=controller.list();
+
+            SortingUtils.sort(tickets,
+                    (a, b) -> Double.compare(a.calculatePrice(), b.calculatePrice()));
+
+            ReflectionUtils.inspect(t1);
+
+            for (Ticket t : tickets) {
+                IO.println(
+                        t.getCustomerName() + " seat: " + t.getSeatNumber() + " price: " + t.calculatePrice()
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        List<Ticket> tickets = repo.findAll();
-        for (Ticket t : tickets) {
-            IO.println(t.getCustomerName() + " bought ticket for seat " + t.getSeatNumber() + ", price: " + t.calculatePrice());
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
 }
